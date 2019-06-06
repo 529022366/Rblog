@@ -1,0 +1,119 @@
+---
+title: "How to create a US map with color indication"
+author: "Huawen Sun"
+date: "2019/06/05"
+output: html_document
+---
+```{r setup, include = FALSE}
+library(data.table)
+library(usmap)
+library(ggplot2)
+```
+
+```{r echo = FALSE}
+TopData <- fread("./data/State_MedianListingPrice_TopTier.csv")
+colnames(TopData)[1] <- "state"
+```
+
+## Packages needed:
+
+####ggplot2
+####usmap
+
+## Data needed:
+Any data with state names will work for this plot, but the column name for the state names
+must be 'state' or 'fips'.
+For example, I am using a US home sale price data for all states, which contains
+state names.
+
+## Creating the basic map
+First step is to create a basic map that uses value as color indication.
+
+For example:
+
+```
+plot_usmap(data = TopData, values = "10-Jan", lines = "white")
+
+```
+
+```{r echo = FALSE}
+plot_usmap(data = TopData, values = "10-Jan", lines = "white")
+```
+
+It will create a US map, and uses price in Jan 2010 as color indication. The more expensive the price is, 
+the color will be darker.
+You can also see that each state is separated by white lines, you can also change the color of the lines to
+other colors. For example, red lines.
+
+```
+plot_usmap(data = TopData, values = "10-Jan", lines = "red")
+```
+```{r echo = FALSE}
+plot_usmap(data = TopData, values = "10-Jan", lines = "red")
+```
+
+Now the color of lines are red.
+
+## Add legend
+
+To add legend, you can use
+
+```
+scale_fill_continuous(name = "price of 2010-01", label = scales::comma)
+```
+We are naming the legend as 'price of 2010-01', and set the scale of legend color to the price values.
+
+```{r echo = FALSE}
+plot_usmap(data = TopData, values = "10-Jan", lines = "white") + 
+  scale_fill_continuous(name = "price of 2010-01", label = scales::comma)
+```
+
+If you want to change the postion of the legend, you can type:
+```
+theme(legend.position = "right")
+```
+
+```{r echo = FALSE}
+plot_usmap(data = TopData, values = "10-Jan", lines = "white") + 
+  scale_fill_continuous(name = "price of 2010-01", label = scales::comma) + 
+  theme(legend.position = "right")
+```
+
+Now the legend is placed at the right side of the map.
+
+## Add titles
+You can also add title and subtitle to the map.
+```
+labs(title = "US home sale price 01/2010", subtitle = "Color indicates the price")
+```
+```{r echo = FALSE}
+plot_usmap(data = TopData, values = "10-Jan", lines = "white") + 
+  scale_fill_continuous(name = "price of 2010-01", label = scales::comma) + 
+  theme(legend.position = "right") +
+  labs(title = "US home sale price 01/2010", subtitle = "Color indicates the price")
+```
+
+## Complete Code
+```
+library(data.table)
+library(usmap)
+library(ggplot2)
+
+TopData <- fread("./data/State_MedianListingPrice_TopTier.csv")
+
+colnames(TopData)[1] <- "state"
+
+plot_usmap(data = TopData, values = "10-Jan", lines = "white") + 
+  scale_fill_continuous(name = "price of 2010-01", label = scales::comma) + 
+  theme(legend.position = "right") +
+  labs(title = "US home sale price 01/2010", subtitle = "Color indicates the price")
+```
+## Thank you for reading!
+
+## Part of TopData
+### State name and 2010-01 price
+
+```{r echo = FALSE}
+TopData$state
+TopData$`10-Jan`
+```
